@@ -1,7 +1,19 @@
 import axios from 'axios';
+import { auth } from '../firebase/firebase';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://localhost:5001/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://localhost:7092/api',
+});
+
+// ✅ Attach Firebase ID token to every request automatically
+api.interceptors.request.use(async (config) => {
+  const user = auth.currentUser;
+  if (user) {
+    const token = await user.getIdToken();
+    config.headers = config.headers ?? {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export interface User {
