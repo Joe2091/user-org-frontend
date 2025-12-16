@@ -35,8 +35,7 @@ import { ref } from 'vue';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import { getUsers, getMe, syncUser } from '../api/users';
-// Optional if you want to redirect after login:
-// import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const email = ref('');
 const password = ref('');
@@ -44,9 +43,7 @@ const loading = ref(false);
 const error = ref<string | null>(null);
 const status = ref<string | null>(null);
 const meResult = ref<string | null>(null);
-
-// Optional redirect:
-// const router = useRouter();
+const router = useRouter();
 
 async function onLogin() {
   loading.value = true;
@@ -63,6 +60,8 @@ async function onLogin() {
     await syncUser();
 
     status.value = 'Logged in and synced to DB';
+
+    await router.push('/home');
 
     // Optional: immediately show /me result on-screen
     const me = await getMe();
